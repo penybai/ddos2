@@ -96,33 +96,102 @@ fi
 
 BASEDIR=`pwd`
 CC="gcc"
-CFLAGS="-c -fPIC -I../../library/include/"
+CFLAGS="-c -Wall -I${BASEDIR}/library/libddos2"
 LD="ld"
 LD_FLAGS="-ldl"
-OBJ_DIR="../../obj/"
-BIN_DIR="../../bin/modules/"
-LIB_DIR="../../lib/"
-EXECUTABLE="mod_tcp.so"
+OBJ_DIR="obj/"
+BIN_DIR="bin/"
+LIB_DIR="lib/"
+MODULES_DIR="modules/"
+MODULES_BIN="bin/modules/"
+EXECUTABLE="ddos2"
 
-declare -a SOURCES=("mod_tcp")
-declare -a MODULES=("mod_a")
+declare -a SOURCES=("network" "commons" "array" "hashtable" "message" "module" "arguments" "main")
+declare -a MODULES=("mod_a" "mod_tcp")
 
-target_all(){
-    info "Building mod_tcp."
-    require_directory $OBJ_DIR
-    require_directory $BIN_DIR
-    require_directory $LIB_DIR
-    for file in "${SOURCES[@]}"
-    do
-        exec "${CC} ${CFLAGS} ${file}.c -o ${OBJ_DIR}${file}.o"
-    done
-    change_dir $OBJ_DIR
-    objects=$(printf " %s.o" "${SOURCES[@]}")
-    exec "${CC} -shared -L${BASEDIR}/${LIB_DIR} -lddos2 -o ${BASEDIR}/${BIN_DIR}${EXECUTABLE} $
-    leave_dir
-    success "Succesfully built mod_tcp."
+target_clean(){
+   info "Cleaning up."
+   exec "rm -rf ${OBJ_DIR}"
+   exec "rm -rf ${BIN_DIR}"
+   exec "rm -rf ${LIB_DIR}"
+   success "Cleaned."
 }
 
+target_library(){
+   change_dir "library/libddos2"
+   exec "./build.sh release" #TODO:In relaease – set release target
+   leave_dir
+}
+
+target_library-debug(){
+   change_dir "library/libddos2"
+   exec "./build.sh debug"
+   leave_dir
+}
+
+target_debug(){
+   CC="gcc-9"
+   
+   info "Building debug."
+   require_directory $OBJ_DIR
+   require_directory $BIN_DIR
+   require_directory $MODULES_BIN
+   leave_dir
+   for file in "${SOURCES[@]}"
+   do
+       exec "${CC} ${CFLAGS} -fsanitize=address -fsanitize=undefined ${file}.c -o ${OBJ_DIR}${file}.o"
+   done
+   change_dir $OBJ_DIR
+   objects=$(printf " %s.o" "${SOURCES[@]}")
+   exec "${CC} -lasan -lubsan -o ${BASEDIR}/${BIN_DIR}${EXECUTABLE} ${objects}"
+   leave_dir
+   success "Succesfully built debug."
+}
+
+target_release(){
+   info "Building release."
+   require_directory $OBJ_DIR
+   require_directory $BIN_DIR
+   require_directory $MODULES_BIN
+   leave_dir
+   for file in "${SOURCES[@]}"
+   do
+       exec "${CC} ${CFLAGS} -Ofast ${file}.c -o ${OBJ_DIR}${file}.o"
+   done
+   change_dir $OBJ_DIR
+   objects=$(printf " %s.o" "${SOURCES[@]}")
+   exec "${CC} ${LD_FLAGS} -o ${BASEDIR}/${BIN_DIR}${EXECUTABLE} ${objects}"
+   leave_dir
+   success "Succesfully built release."
+}
+
+target_modules(){
+   target_library
+   info "Building modules."
+   require_directory $MODULES_BIN
+   for module in "${MODULES[@]}"
+   do
+     change_dir $MODULES_DIR
+     change_dir $module
+     exec "./build.sh all"
+     leave_dir
+   done
+   success "Succesfully built modules."
+}
+
+
+
+target_all(){
+   target_library
+   target_release
+   target_modules
+}
+
+target_all-debug(){
+   target_library-debug
+   target_debug
+   target_modules
+}
 if [[ `type -t "target_${1}"` == "function" ]]; then
      eval "target_${1}"
      success "Done."
