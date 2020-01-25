@@ -107,7 +107,7 @@ MODULES_BIN="bin/modules/"
 EXECUTABLE="ddos2"
 
 declare -a SOURCES=("network" "commons" "array" "hashtable" "message" "module" "arguments" "main")
-declare -a MODULES=("mod_a")
+declare -a MODULES=("mod_a" "mod_tcp")
 
 target_clean(){
    info "Cleaning up."
@@ -188,7 +188,7 @@ target_all(){
 }
 
 target_all-debug(){
-   target_library_debug
+   target_library-debug
    target_debug
    target_modules
 }
