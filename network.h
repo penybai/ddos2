@@ -30,6 +30,7 @@ typedef struct _packet_t{
     size_t sz;
     connection_t* connection; //if supported
     bool open_connection; //true if requires opening new connection
+    hashtable* options;
 } packet_t;
 
 typedef struct _iface_t{
@@ -57,5 +58,6 @@ connection_t* connection_open(iface_t* iface, char* target);
 bool connection_close(connection_t* connection);
 bool packet_send(iface_t* iface, packet_t* packet);
 packet_t* packet_receive(connection_t* connection);
+void packet_set_option(packet_t* packet, char* name, void* value);
 
 #endif /* network_h */

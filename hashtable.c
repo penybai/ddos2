@@ -127,3 +127,20 @@ void hastbl_destroy(hashtable *tbl){
         }
     }
 }
+
+void hashtbl_set(hashtable *tbl, char *key,void *value){
+    unsigned long hash = _hash((unsigned char *)key, tbl->capacity);
+    if(tbl->base[hash]==NULL){
+        hashtbl_add(tbl, key, value);
+    }else{
+        _hashtable_node *iterator=tbl->base[hash];
+        while (iterator) {
+            if(!strcmp(iterator->key, key)){
+                break;
+            }
+            iterator=iterator->next;
+        }
+        assert(iterator&&!strcmp(iterator->key,key));
+        iterator->value=value;
+    }
+}

@@ -130,3 +130,15 @@ packet_t* packet_receive(connection_t* connection){
     
     return connection->iface->packet_receive(connection);
 }
+
+void packet_set_option(packet_t* packet, char* name, void* value){
+    if(packet->options){
+        error("Programming error: %s: Bad argument: packet->options is NULL(%s:%d)",__FUNCTION__,__FILE__,__LINE__);
+        return ;
+    }
+    if(hashtbl_check_key(packet->options, name)){
+        hashtbl_set(packet->options, name, value);
+        return ;
+    }
+    hashtbl_add(packet->options, name, value);
+}
