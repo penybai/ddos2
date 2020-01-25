@@ -36,5 +36,6 @@ void hashtbl_add(hashtable *tbl, char *key, void *data);
 void *hashtbl_get(hashtable *tbl, char *key);
 bool hashtbl_check_key(hashtable *tbl,char *key);
 void hastbl_destroy(hashtable *tbl);
+void hashtbl_set(hashtable *tbl, char *key,void *value);
 
 #endif /* hashtable_h */

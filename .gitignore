@@ -60,3 +60,9 @@ dkms.conf
 # Project
 bin/
 obj/
+
+# VIM
+*.swp
+*.swa
+*.swo
+
