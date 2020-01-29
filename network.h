@@ -24,19 +24,20 @@ typedef struct _connection_t{
 } connection_t;
 
 typedef struct _packet_t{
-    char* target;
-    char* payload;
-    struct _iface_t* iface;
-    size_t sz;
+    char* target;//target address – could be anything, should be converted to any useful structure by module
+    char* payload;//payload – is data that should be sent
+    struct _iface_t* iface;//interface pointer for core program purposes
+    size_t sz;//payload size in bytes
     connection_t* connection; //if supported
     bool open_connection; //true if requires opening new connection
-    hashtable* options;
+    hashtable* options;//pakcet options
 } packet_t;
 
 typedef struct _iface_t{
     char* name;
     uint64_t packets_sent;
     uint64_t bytes_sent;
+    /*this functions should be implemented inside of module*/
     bool (*packet_send)(packet_t*);
     packet_t* (*packet_receive)(connection_t*);
     connection_t* (*connection_open)(char*);
@@ -49,7 +50,7 @@ typedef struct _iface_t{
 
 extern hashtable* network_ifaces;
 extern bool network_statistics;
-
+/* Core program's functions*/
 void network_begin(void);
 void network_set_stats(bool stat);
 iface_t* network_iface(char* name);
