@@ -29,6 +29,7 @@ typedef struct _packet_t{
     size_t sz;
     connection_t* connection; //if supported
     bool open_connection; //true if requires opening new connection
+    hashtable* options;
 } packet_t;
 
 typedef struct _iface_t{
