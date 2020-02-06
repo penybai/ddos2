@@ -84,7 +84,7 @@ if [[ $1 == "-h" ]]; then
 fi
 
 BASEDIR=`pwd`
-CC="gcc"
+CC="gcc-9"
 CFLAGS="-c -fPIC -I../../library/include/"
 LD="ld"
 LD_FLAGS="-ldl"
@@ -93,8 +93,7 @@ BIN_DIR="../../bin/modules/"
 LIB_DIR="../../lib/"
 EXECUTABLE="mod_tcp.so"
 
-declare -a SOURCES=("mod_tcp")
-declare -a MODULES=("mod_a")
+declare -a SOURCES=("mod_tcp" "socket")
 
 target_all(){
     info "Building mod_tcp."
@@ -107,7 +106,7 @@ target_all(){
     done
     change_dir $OBJ_DIR
     objects=$(printf " %s.o" "${SOURCES[@]}")
-    exec "${CC} -shared -L${BASEDIR}/${LIB_DIR} -lddos2 -o ${BASEDIR}/${BIN_DIR}${EXECUTABLE}"
+    exec "${CC} -shared -L${BASEDIR}/${LIB_DIR} -lddos2 -o ${BASEDIR}/${BIN_DIR}${EXECUTABLE} ${objects}"
     leave_dir
     success "Succesfully built mod_tcp."
 }

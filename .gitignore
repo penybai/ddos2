@@ -65,4 +65,4 @@ obj/
 *.swp
 *.swa
 *.swo
-
+.vimrc

@@ -24,13 +24,13 @@ typedef struct _connection_t{
 } connection_t;
 
 typedef struct _packet_t{
-    char* target;//target address – could be anything, should be converted to any useful structure by module
-    char* payload;//payload – is data that should be sent
-    struct _iface_t* iface;//interface pointer for core program purposes
-    size_t sz;//payload size in bytes
-    connection_t* connection; //if supported
-    bool open_connection; //true if requires opening new connection
-    hashtable* options;//pakcet options
+    char* target; //target address – could be anything, should be converted to any useful structure by module
+    char* payload; //payload – is data that should be sent
+    struct _iface_t* iface; //interface pointer for core program purposes
+    size_t sz; //payload size in bytes
+    connection_t* connection;   //if supported
+    bool open_connection;  //true if requires opening new connection
+    hashtable* options; //pakcet options
 } packet_t;
 
 typedef struct _iface_t{
@@ -44,7 +44,7 @@ typedef struct _iface_t{
     bool (*connection_close)(connection_t*);
     /*TODO:
     connection_t* connection_wait(iface_t*);
-    packet_t* packet_listen(iface_t*);//Usefule with UDP
+    packet_t* packet_listen(iface_t*); //Usefule with UDP
      */
 } iface_t;
 
